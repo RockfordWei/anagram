@@ -1,6 +1,6 @@
 # Anagram Solution Servers in Different Languages/Frameworks
 
-- [Swift (Powered by Perfect)](servers/AnagramSwift/README.md)
+- [Swift (Powered by Perfect)](AnagramSwift/README.md)
 
 # Acknowledgement
 
