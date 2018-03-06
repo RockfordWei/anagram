@@ -22,7 +22,11 @@ class WebServer(BaseHTTPRequestHandler):
             if len(components) > 1:
                 word = components[1]
                 solution = global_anagram.solve(word)
-                self.wfile.write(json.dumps(solution))
+                text = json.dumps(solution)
+                self.wfile.write(text)
+                del text
+                del solution
+            del components
 
     def do_HEAD(self):
         self._set_headers()
