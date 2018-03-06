@@ -42,25 +42,19 @@ guard let data = downloaded,
 let _global_anagram = Anagram(dictionary: text)
 let _global_json = JSONEncoder()
 
-struct AnagramResponse: Encodable {
-  public var error = ""
-  public var solution: [String] = []
-}
-
 // handle the http request
 func handler(request: HTTPRequest, response: HTTPResponse) {
 	response.setHeader(.contentType, value: "text/json")
   do {
-    var resp = AnagramResponse()
     if let input = request.param(name: "anagram") {
-      resp.solution = try _global_anagram.solve(word: input).map { $0 }
+      let solution:[String] = try _global_anagram.solve(word: input).map { $0 }
+      let json = try _global_json.encode(solution)
+      response.appendBody(bytes: (json.map { $0 }))
     } else {
-      resp.error = "input is missing"
+      throw PerfectError.apiError("empty request")
     }
-    let json = try _global_json.encode(resp)
-    response.appendBody(bytes: (json.map { $0 }))
   } catch {
-    response.appendBody(string: "{\"error\": \"\(error)\"}")
+    response.appendBody(string: "[]")
   }
 	response.completed()
 }

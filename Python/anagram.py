@@ -40,6 +40,26 @@ class Anagram:
         del x
         del y
         return result
+
+    # solve all the anagrams for a word
+    # - parameter word: a text to input
+    # - returns: a set of string as the solution
+    # - throws: will yield an error if the word is not a valid English word
+    def solve(self, word): 
+        low = word.lower()
+        w = Anagram.weight(low)
+        size = len(low)
+        result = []
+        if self.wordGroups.has_key(size):
+            same_sized = self.wordGroups[size]
+            if same_sized.has_key(w):
+                same_weighted = same_sized[w]
+                for candidate in same_weighted:
+                    if Anagram.compare(low, candidate):
+                        result.append(candidate)
+                    
+        return result
+        
     
     # calculate the "weight" of a string, for faster comparison purpose
     # a "weight" is the ascii code sum of the input string
@@ -94,13 +114,3 @@ class Anagram:
     def __init__(self, text):
         self.wordGroups = Anagram.build(text.split('\n'))
         
-        
-a = '''dog
-eat
-horse
-cat
-food
-god
-tea'''
-b = Anagram(a)
-print(b.wordGroups)
