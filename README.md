@@ -1,10 +1,10 @@
 # Anagram Solution Servers in Different Languages/Frameworks
 
-- [Swift (Powered by Perfect)](Swift/README.md)
-- [Python](Python/README.md)
-- [PHP](PHP/README.md)
-- [Java](Java/README.md)
-- [JavaScript (Powered by NodeJS)](JavaScript/README.md)
+- [Swift (Powered by Perfect)](Swift/)
+- [Python](Python/)
+- [PHP](PHP/)
+- [Java](Java/)
+- [JavaScript (Powered by NodeJS)](JavaScript/)
 
 # Acknowledgement
 
