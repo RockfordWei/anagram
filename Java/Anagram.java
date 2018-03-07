@@ -86,23 +86,23 @@ public class Anagram implements HttpHandler {
         int size = word.length();
         int weight = weight(w);
         if (storage.containsKey(size)) {
-            HashMap<Integer, HashSet<String>> sameSized = storage.get(size);
-            if (sameSized.containsKey(weight)) {
-                HashSet<String> sameWeight = sameSized.get(weight);
+            HashMap<Integer, HashSet<String>> sameSize = storage.get(size);
+            if (sameSize.containsKey(weight)) {
+                HashSet<String> sameWeight = sameSize.get(weight);
                 sameWeight.add(w);
-                sameSized.put(weight, sameWeight);
+                sameSize.put(weight, sameWeight);
             } else {
                 HashSet<String> sameWeight = new HashSet();
                 sameWeight.add(w);
-                sameSized.put(weight, sameWeight);
+                sameSize.put(weight, sameWeight);
             }
-            storage.put(size, sameSized);
+            storage.put(size, sameSize);
         } else {
             HashSet<String> sameWeight = new HashSet();
             sameWeight.add(w);
-            HashMap<Integer, HashSet<String>> sameSized = new HashMap();
-            sameSized.put(weight, sameWeight);
-            storage.put(size, sameSized);
+            HashMap<Integer, HashSet<String>> sameSize = new HashMap();
+            sameSize.put(weight, sameWeight);
+            storage.put(size, sameSize);
         }
     } 
     
@@ -117,9 +117,9 @@ public class Anagram implements HttpHandler {
         int size = word.length();
         int weight = weight(w);
         if (storage.containsKey(size)) {
-            HashMap<Integer, HashSet<String>> sameSized = storage.get(size);
-            if (sameSized.containsKey(weight)) {
-                HashSet<String> sameWeight = sameSized.get(weight);
+            HashMap<Integer, HashSet<String>> sameSize = storage.get(size);
+            if (sameSize.containsKey(weight)) {
+                HashSet<String> sameWeight = sameSize.get(weight);
                 HashMap<Byte, Integer> target = Anagram.freqChar(w);
                 sameWeight.forEach((candidate) -> {
                     if (!candidate.equals(w)) {

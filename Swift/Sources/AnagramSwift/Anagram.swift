@@ -69,8 +69,8 @@ public class Anagram {
   public func solve(word: String) throws -> Set<String> {
     let low = word.lowercased()
     let w = Anagram.weight(word: low)
-    guard let sameSized = self.wordGroups[low.count],
-      let list = sameSized[w],
+    guard let sameSize = self.wordGroups[low.count],
+      let list = sameSize[w],
       list.contains(low) else {
         throw Exception.notAnEnglishWord
     }
@@ -110,15 +110,15 @@ public class Anagram {
       let w = word.lowercased()
       let size = w.count
       let weight = Anagram.weight(word: w)
-      if var sameSized = storage[size] {
-        if var sameWeight = sameSized[weight] {
+      if var sameSize = storage[size] {
+        if var sameWeight = sameSize[weight] {
           sameWeight.insert(w)
-          sameSized[weight] = sameWeight
+          sameSize[weight] = sameWeight
         } else {
           let list: Set<String> = [w]
-          sameSized[weight] = list
+          sameSize[weight] = list
         }
-        storage[size] = sameSized
+        storage[size] = sameSize
       } else {
         let list: Set<String> = [w]
         let sameWeight: [Int: Set<String>] = [weight: list]
