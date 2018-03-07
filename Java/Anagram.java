@@ -4,6 +4,19 @@
  */
 package anagram;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -11,7 +24,7 @@ import java.util.HashSet;
  * This is a demo class for a high performance anagram solution in Swift
  * @author Rockford Wei
  */
-public class Anagram {
+public class Anagram implements HttpHandler {
 
     /**
      * convert a string to a frequency table
@@ -49,9 +62,18 @@ public class Anagram {
         }
         return sum;
     }
-    
+    /**
+     * an indexed word groups for the anagram solution, see [build()](#build)
+     */ 
+    private final HashMap<Integer, HashMap<Integer, HashSet<String>>> 
+            storage;
+
+    public Anagram() {
+        this.storage = new HashMap();
+    }
+        
     /** 
-     * build an indexed word groups from a word list
+     * append a word to the indexed storage
      * this is the key to speed up an anagram puzzle solution.
      * all words are grouped by size and weight,
      * for example, "dog" and "cow" both belong to a group of size 3,
@@ -61,46 +83,32 @@ public class Anagram {
      * sum = "d" + "o" + "g" (ASCII code)
      * and "horse" is in group 5 but also in a weight list of
      * sum = "h" + "o" + "r" + "s" + "e"
-     * @param words an array of word
-     * @return a dictionary first indexed by the word size then second indexed by the word weight
+     * @param word the word to append
      */
-    public static HashMap<Integer, HashMap<Integer, HashSet<String>>> build(String[] words) {
-      HashMap<Integer, HashMap<Integer, HashSet<String>>> storage = new HashMap();
-      for(String word: words) {
-          String w = word.toLowerCase();
-          int size = word.length();
-          int weight = weight(w);
-          if (storage.containsKey(size)) {
-              HashMap<Integer, HashSet<String>> sameSized = storage.get(size);
-              if (sameSized.containsKey(weight)) {
-                  HashSet<String> sameWeight = sameSized.get(weight);
-                  sameWeight.add(w);
-                  sameSized.put(weight, sameWeight);
-              } else {
-                  HashSet<String> sameWeight = new HashSet();
-                  sameWeight.add(w);
-                  sameSized.put(weight, sameWeight);
-              }
-              storage.put(size, sameSized);
-          } else {
+    public void append(String word) {
+        String w = word.toLowerCase();
+        int size = word.length();
+        int weight = weight(w);
+        if (storage.containsKey(size)) {
+            HashMap<Integer, HashSet<String>> sameSized = storage.get(size);
+            if (sameSized.containsKey(weight)) {
+                HashSet<String> sameWeight = sameSized.get(weight);
+                sameWeight.add(w);
+                sameSized.put(weight, sameWeight);
+            } else {
+                HashSet<String> sameWeight = new HashSet();
+                sameWeight.add(w);
+                sameSized.put(weight, sameWeight);
+            }
+            storage.put(size, sameSized);
+        } else {
             HashSet<String> sameWeight = new HashSet();
             sameWeight.add(w);
             HashMap<Integer, HashSet<String>> sameSized = new HashMap();
             sameSized.put(weight, sameWeight);
             storage.put(size, sameSized);
-          }
-      }
-      return storage;
+        }
     } 
-    
-    /**
-     * an indexed word groups for the anagram solution, see [build()](#build)
-     */ 
-    private HashMap<Integer, HashMap<Integer, HashSet<String>>> wordGroups;
-    
-    Anagram(String [] words) {
-        wordGroups = build(words);
-    }
     
     /**
      * solve all the anagrams for a word
@@ -112,8 +120,8 @@ public class Anagram {
         String w = word.toLowerCase();
         int size = word.length();
         int weight = weight(w);
-        if (wordGroups.containsKey(size)) {
-            HashMap<Integer, HashSet<String>> sameSized = wordGroups.get(size);
+        if (storage.containsKey(size)) {
+            HashMap<Integer, HashSet<String>> sameSized = storage.get(size);
             if (sameSized.containsKey(weight)) {
                 HashSet<String> sameWeight = sameSized.get(weight);
                 HashMap<Byte, Integer> target = Anagram.freqChar(w);
@@ -129,13 +137,39 @@ public class Anagram {
         }
         return result;
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        String [] words = {"eat", "tea", "ate", "dog", "god", "horse", "rose"};
-        Anagram a = new Anagram(words);
-        System.out.println(a.solve("eat"));
+    
+    @Override
+    public void handle(HttpExchange he) throws IOException {
+        String param = he.getRequestURI().getQuery();
+        String prefix = "anagram=";
+        String response = "[]";
+        if (param.startsWith(prefix)) {
+            String word = param.substring(prefix.length());
+            HashSet<String> solution = solve(word);
+            response = solution.toString();
+        }
+        he.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
     
+    /**
+     * @param args the command line arguments
+     * @throws java.lang.Exception
+     */
+    public static void main(String[] args) throws Exception {
+        URL wordlist = new URL("https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt");
+        URLConnection cnn = wordlist.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(cnn.getInputStream()));
+        Anagram a = new Anagram();
+        String line; 
+        while((line = in.readLine()) != null) {
+            a.append(line);
+        }
+        HttpServer webServer = HttpServer.create(new InetSocketAddress(8181), 0);
+        webServer.createContext("/", a);
+        webServer.setExecutor(null);
+        webServer.start();
+    }    
 }
