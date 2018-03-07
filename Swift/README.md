@@ -17,5 +17,5 @@ docker run -it -v $PWD:/home -w /home -p 8181:8181 rockywei/swift:4.0 /bin/bash 
 
 ```
 $ curl http://localhost:8181/?anagram=eat
-{"solution":["eta","tea","ate"],"error":""}
+["eta","tea","ate"]
 ```

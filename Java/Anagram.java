@@ -2,21 +2,17 @@
  Anagram Solution Class in Java
  by Rockford Wei, March 6th, 2018
  */
-package anagram;
-
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -138,15 +134,23 @@ public class Anagram implements HttpHandler {
         return result;
     }
     
+    /**
+     * HttpHandler
+     * @param he required by the interface
+     * @throws java.io.IOException
+     */
     @Override
+    @SuppressWarnings("ConvertToTryWithResources")
     public void handle(HttpExchange he) throws IOException {
         String param = he.getRequestURI().getQuery();
         String prefix = "anagram=";
         String response = "[]";
         if (param.startsWith(prefix)) {
             String word = param.substring(prefix.length());
-            HashSet<String> solution = solve(word);
-            response = solution.toString();
+            String[] solution = solve(word).stream()
+                    .map( w -> '"' + w + '"' )
+                    .toArray(String[]::new);
+            response = Arrays.toString(solution);
         }
         he.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = he.getResponseBody();
@@ -167,9 +171,12 @@ public class Anagram implements HttpHandler {
         while((line = in.readLine()) != null) {
             a.append(line);
         }
+        System.out.println("dictionary ready");
         HttpServer webServer = HttpServer.create(new InetSocketAddress(8181), 0);
         webServer.createContext("/", a);
         webServer.setExecutor(null);
+        System.out.println("server is running on 8181");
+        System.out.println("you can test it as `curl http://localhost:8181/?anagram=eat`");
         webServer.start();
     }    
 }
