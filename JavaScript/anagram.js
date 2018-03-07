@@ -2,6 +2,11 @@
 Anagram Solution Class in JavaScript
 by Rockford Wei, March 7th, 2018
 */
+
+/**
+ * This is a demo class for a high performance anagram solution in JavaScript
+ * @author Rockford Wei
+ */
 class Anagram {
 
 	/**

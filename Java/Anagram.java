@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * This is a demo class for a high performance anagram solution in Swift
+ * This is a demo class for a high performance anagram solution in Java
  * @author Rockford Wei
  */
 public class Anagram implements HttpHandler {
