@@ -1,4 +1,4 @@
-# Anagram Solution Servers in Different Languages/Frameworks
+# Anagram Solution Server in Different Languages/Frameworks
 
 - [Swift (Powered by Perfect)](Swift/)
 - [Python](Python/)
