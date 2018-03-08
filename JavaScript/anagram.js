@@ -26,15 +26,12 @@ class Anagram {
 	}
 
 	/** 
-	* compare two words for a pair of anagram
-	* @param word text to input
-	* @param candidate another string to compare with
-	* @return true for anagram. **Note**: a word cannot be the anagram itself
+	* compare two frequency tables
+	* @param a target to test
+	* @param b candidate to test
+	* @return true for anagram.
 	*/
-	static compare(word, candidate) {
-		if (word == candidate) return false;
-		let a = Anagram.freqChar(word);
-		let b = Anagram.freqChar(candidate);
+	static compare(a, b) {
 		let x = Object.keys(a).sort();
 		let y = Object.keys(b).sort();
 		let m = x.join('');
@@ -106,14 +103,17 @@ class Anagram {
 		let w = word.toLowerCase();
 		let size = w.length;
 		let weight = Anagram.weight(w);
+		let f = Anagram.freqChar(w);
 		if (this.storage[size]) {
 			let sameSize = this.storage[size];
 			if (sameSize[weight]) {
 				let sameWeight = sameSize[weight];
 				for(var i in sameWeight) {
-					let v = sameWeight[i];
-					if (Anagram.compare(w, v)) {
-		 				result.push(v)
+					let u = sameWeight[i];
+					if (w == u) continue;
+					let v = Anagram.freqChar(u);
+					if (Anagram.compare(f, v)) {
+		 				result.push(u)
 					}
 				}
 			}

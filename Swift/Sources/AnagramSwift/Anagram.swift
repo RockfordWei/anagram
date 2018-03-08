@@ -34,28 +34,20 @@ public class Anagram {
     return freq
   }
 
-  /// compare two words for a pair of anagram
-  /// - parameter word: text to input
-  /// - parameter with: another string to compare with
-  /// - returns: true for anagram. **Note**: a word cannot be the anagram itself
-  public static func compare(word: String, with: String) -> Bool {
-
-    // a word cannot be the anagram itself
-    if word == with {
-      return false
-    }
-    // get the frequency tables for the both word
-    let a = freqChar(word: word)
-    let b = freqChar(word: with)
+  /// compare two frequency tables
+  /// - parameter fA: object frequency table to test
+  /// - parameter fB: candidate frequency table to test
+  /// - returns: true for match
+  public static func isMatch(fA: [UInt8: Int], fB: [UInt8: Int]) -> Bool {
 
     // at least both word should have the same character set in general
-    guard a.keys == b.keys else {
+    guard fA.keys == fB.keys else {
       return false
     }
 
     // compare the frequency for each character
-    for i in a.keys {
-      guard a[i] == b[i] else {
+    for i in fA.keys {
+      guard fA[i] == fB[i] else {
         return false
       }
     }
@@ -69,6 +61,7 @@ public class Anagram {
   public func solve(word: String) throws -> Set<String> {
     let low = word.lowercased()
     let w = Anagram.weight(word: low)
+    let fA = Anagram.freqChar(word: low)
     guard let sameSize = self.wordGroups[low.count],
       let list = sameSize[w],
       list.contains(low) else {
@@ -76,7 +69,9 @@ public class Anagram {
     }
     var result: Set<String> = []
     for candidate in list {
-      if Anagram.compare(word: low, with: candidate) {
+      if low == candidate { continue }
+      let fB = Anagram.freqChar(word: candidate)
+      if Anagram.isMatch(fA: fA, fB: fB) {
         result.insert(candidate)
       }
     }

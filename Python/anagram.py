@@ -25,22 +25,6 @@ class Anagram:
             
         return freq
     
-    # compare two words for a pair of anagram
-    # - parameter a: text to input
-    # - parameter b: another string to compare with
-    # - returns: true for anagram. **Note**: a word cannot be the anagram itself
-    @staticmethod
-    def compare(a, b):
-        if a == b: 
-            return False
-            
-        x = Anagram.freqChar(a)
-        y = Anagram.freqChar(b)
-        result = x == y
-        del x
-        del y
-        return result
-
     # solve all the anagrams for a word
     # - parameter word: a text to input
     # - returns: a set of string as the solution
@@ -48,6 +32,7 @@ class Anagram:
     def solve(self, word): 
         low = word.lower()
         w = Anagram.weight(low)
+        fA = Anagram.freqChar(low)
         size = len(low)
         result = []
         if self.wordGroups.has_key(size):
@@ -55,7 +40,7 @@ class Anagram:
             if same_sized.has_key(w):
                 same_weighted = same_sized[w]
                 for candidate in same_weighted:
-                    if Anagram.compare(low, candidate):
+                    if low != candidate and fA == Anagram.freqChar(candidate):
                         result.append(candidate)
                     
         return result
