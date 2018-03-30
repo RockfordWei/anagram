@@ -1,0 +1,11 @@
+{
+  "name": "anagram",
+  "version": "1.0.0",
+  "description": "Anagram Solution Class in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Rockford Wei <rocky@perfect.org>",
+  "license": "ISC"
+}
