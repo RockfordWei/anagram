@@ -6,6 +6,7 @@
 - [Java](Java/)
 - [Java+Spark](Java+Spark/)
 - [JavaScript (Powered by NodeJS)](JavaScript/)
+- [JavaScript (Powered by NodeJS with C++ AddON)](JavaScript+C++/)
 
 # Algorithm
 
