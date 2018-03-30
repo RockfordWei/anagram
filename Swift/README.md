@@ -1,4 +1,4 @@
-# AnagramSwift
+# Anagram Swift
 
 A Swift Server Demo for a High Performance Anagram Solution
 

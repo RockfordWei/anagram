@@ -1,4 +1,4 @@
-# AnagramJava
+# Anagram Java
 
 A Java Server Demo for a High Performance Anagram Solution
 

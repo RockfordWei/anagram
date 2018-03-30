@@ -1,4 +1,4 @@
-# AnagramPHP
+# Anagram PHP
 
 A PHP Server Demo for a High Performance Anagram Solution
 

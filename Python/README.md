@@ -1,4 +1,4 @@
-# AnagramPython
+# Anagram Python
 
 A Python Server Demo for a High Performance Anagram Solution
 
